@@ -1,4 +1,5 @@
 .DS_Store
+pasqooda.code-workspace
 node_modules
 /dist
 

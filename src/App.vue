@@ -1,32 +1,39 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-  </div>
+  <v-app>
+    <v-container fluid style="max-width:1200px;">
+      <appHeader />
+      <router-view />
+    </v-container>
+    <appFooter />
+  </v-app>
+  
 </template>
 
+
+
+
+<script>
+import appHeader from '@/components/header.vue';
+import appFooter from '@/components/footer.vue';
+
+export default {
+  name: 'App',
+  components: {
+    appHeader,
+    appFooter
+  },
+  mounted() {
+    this.$store.dispatch('initState')
+  }
+
+}
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+  @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
+  @import url('https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css');
+  @import url('https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css');
+  @import './assets/styles/app.css';
 </style>
+
+
