@@ -1,48 +1,45 @@
 <template>
-  <div>
-
-                    
+  <div>               
                      <v-row no-gutters>
                       <v-col cols="8" class="pr-10">
-                        <p>Лица, перед которыми у вас есть задолженность *</p>
-                        <v-radio-group v-model="registration.creditor[1].credit_type" name="creditor['credit_type'][]" row>
-                          <v-radio label="Физлицо" value="private"></v-radio>
-                          <v-radio label="Юрлицо"  value="le"></v-radio>
+                        <p>Кредитор №{{serialNumber}} {{creditor.id}}<v-btn v-if="serialNumber>1" fab elevation="0" x-small color="primary" @click.native="deleteCreditor(creditor.id)"><v-icon dark>mdi-minus</v-icon></v-btn></p>
+                        <v-radio-group required :rules="[rulesLegalForm]" row v-model="creditor.legalForm" @change="updateState" >
+                          <v-radio id="p"  label="Физлицо" value="private"></v-radio>
+                          <v-radio id="l" label="Юрлицо"  value="legal"></v-radio>
                         </v-radio-group>
-
-                        <div v-if="registration.creditor[1].credit_type === 'le'">
-                          <v-text-field label="Название организации" v-model="registration.creditor[1].credit_name" name="creditor['credit_name'][]"></v-text-field>
+                        <div v-show="creditor.legalForm=='legal'">
+                          <v-text-field required :rules="[rulesCreditorName]" @change="updateState" label="Название организации *"  v-model="creditor.name"></v-text-field>
                         </div>
-                        <div v-if="registration.creditor[1].credit_type === 'private'">
-                          <v-text-field label="Фамилия имя отчество" v-model="registration.creditor[1].credit_name" name="creditor['credit_name'][]"></v-text-field>
+                        <div v-show="creditor.legalForm=='private'">
+                          <v-text-field  required :rules="[rulesCreditorName]" @change="updateState" label="Фамилия имя отчество *" v-model="creditor.name"></v-text-field>
                         </div>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col cols="4" class="pr-10">
-                        <v-text-field label="Адрес" v-model="registration.creditor[1].credit_address" name="creditor['credit_address'][]"></v-text-field>
+                        <v-text-field @change="updateState" label="Адрес" v-model="creditor.address"></v-text-field>
                       </v-col>
                       <v-col cols="4" class="pr-10">
-                        <v-text-field label="Телефон" v-model="registration.creditor[1].credit_phone" name="creditor['credit_phone'][]"></v-text-field>
+                        <v-text-field required :rules="[rulesCreditorPhone]" @change="updateState" label="Телефон *" v-model="creditor.phone"></v-text-field>
                       </v-col>
                       <v-col cols="4" class="pr-10">
-                        <v-text-field label="E-mail" v-model="registration.creditor[1].credit_email" name="creditor['credit_email'][]"></v-text-field>
+                        <v-text-field @change="updateState" label="E-mail" v-model="creditor.email"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col cols="4" class="pr-10">
-                        <v-text-field label="Сумма основного долга" v-model="registration.creditor[1].credit_credit" name="creditor['credit_credit'][]"></v-text-field>
+                        <v-text-field @change="updateState" label="Сумма основного долга" v-model="creditor.credit"></v-text-field>
                       </v-col>
                       <v-col cols="4" class="pr-10">
-                        <v-text-field label="Сумма процентов" v-model="registration.creditor[1].credit_interest" name="creditor['credit_interest'][]"></v-text-field>
+                        <v-text-field @change="updateState" label="Сумма процентов" v-model="creditor.interest"></v-text-field>
                       </v-col>
                       <v-col cols="4" class="pr-10">
-                        <v-text-field label="Сумма штрафов" v-model="registration.creditor[1].credit_penalty" name="creditor['credit_penalty'][]"></v-text-field>
+                        <v-text-field @change="updateState" label="Сумма штрафов" v-model="creditor.penalties"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
                       <v-col cols="8" class="pr-10">
-                        <v-text-field label="Документ по которму возникла задолженность" v-model="registration.creditor[1].credit_document"   name="creditor['credit_document'][]"></v-text-field>
+                        <v-text-field @change="updateState" label="Документ по которому возникла задолженность" v-model="creditor.document"></v-text-field>
                       </v-col>
                     </v-row>
                     
@@ -50,21 +47,61 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
 export default {
     props: {
-        PropCheckStep: {type: Function},
+      creditor: {
+        type: Object,
+        required: true
+      },
+      serialNumber: {
+        type: Number,
+        required: true 
+      } 
     },
     methods: {
-        checkStep() {
-            return this.PropCheckStep();
+      updateState() {
+        console.log('updateState emitted');
+        this.$emit('updateState');
+      },
+      deleteCreditor(id) {
+        console.log('Going deleteCreditor conponents: ', id)
+        this.$store.dispatch('creditor/delete',id);
+        this.$store.dispatch('popAllErrorsByID', {step: 1, id: this.$props.creditor.id});
+      },
+      rulesLegalForm(value) {
+        if (!value) {
+          this.$store.dispatch('pushError', {step: 1, name: 'creditorLegalForm_' + this.$props.creditor.id});
+          return 'Нужно выбрать';
+        } else {
+          this.$store.dispatch('popError', {step: 1, name: 'creditorLegalForm_' + this.$props.creditor.id});
+          return true;
         }
-    },
-    computed: mapState({
-        registration: 'registration',
-        step: 'step'
-    })
-    
+      },
+      rulesCreditorName(value) {
+        if (!value) {
+          this.$store.dispatch('pushError', {step: 1, name: 'creditorName_' + this.$props.creditor.id});
+          return 'Укажите кредитора';
+        } else if (value.length < 5) {
+          this.$store.dispatch('pushError', {step: 1, name: 'creditorName_' + this.$props.creditor.id});
+          return '5 знаков минимум';
+        } else {
+          this.$store.dispatch('popError', {step: 1, name: 'creditorName_' + this.$props.creditor.id});
+          return true;
+        }
+      },
+      rulesCreditorPhone(value) {
+        if (!value) {
+          this.$store.dispatch('pushError', {step: 1, name: 'creditorPhone_' + this.$props.creditor.id});
+          return 'Укажите телефон';
+        } else if (value.length < 5) {
+          this.$store.dispatch('pushError', {step: 1, name: 'creditorPhone_' + this.$props.creditor.id});
+          return '5 знаков минимум';
+        } else {
+          this.$store.dispatch('popError', {step: 1, name: 'creditorPhone_' + this.$props.creditor.id});
+          return true;
+        }
+      }
+    }    
 }
 </script>
 

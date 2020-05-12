@@ -23,7 +23,6 @@ export default {
     appFooter
   },
   mounted() {
-    this.$store.dispatch('initState')
   }
 
 }
