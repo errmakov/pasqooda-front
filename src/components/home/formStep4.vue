@@ -62,19 +62,19 @@ export default {
         },
         rulesRealty(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 3, name: 'realty'})
+                this.$store.dispatch('error/add', {step: 3, name: 'realty'});
                 return 'Нужно выбрать';
             } else {
-                this.$store.dispatch('popError', {step: 3, name: 'realty'})
+                this.$store.dispatch('error/delete', {step: 3, name: 'realty'});
                 return true;
             }
         },
         rulesMovable(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 3, name: 'movable'})
+                this.$store.dispatch('error/add', {step: 3, name: 'movable'});
                 return 'Нужно выбрать';
             } else {
-                this.$store.dispatch('popError', {step: 3, name: 'movable'})
+                this.$store.dispatch('error/delete', {step: 3, name: 'movable'});
                 return true;
             }
         }

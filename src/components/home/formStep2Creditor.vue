@@ -2,10 +2,10 @@
   <div>               
                      <v-row no-gutters>
                       <v-col cols="8" class="pr-10">
-                        <p>Кредитор №{{serialNumber}} {{creditor.id}}<v-btn v-if="serialNumber>1" fab elevation="0" x-small color="primary" @click.native="deleteCreditor(creditor.id)"><v-icon dark>mdi-minus</v-icon></v-btn></p>
+                        <p>Кредитор №{{serialNumber}} <v-btn v-if="serialNumber>1" fab elevation="0" x-small color="primary" @click.native="deleteCreditor(creditor.id)"><v-icon dark>mdi-minus</v-icon></v-btn></p>
                         <v-radio-group required :rules="[rulesLegalForm]" row v-model="creditor.legalForm" @change="updateState" >
-                          <v-radio id="p"  label="Физлицо" value="private"></v-radio>
-                          <v-radio id="l" label="Юрлицо"  value="legal"></v-radio>
+                          <v-radio  label="Физлицо" value="private"></v-radio>
+                          <v-radio  label="Юрлицо"  value="legal"></v-radio>
                         </v-radio-group>
                         <div v-show="creditor.legalForm=='legal'">
                           <v-text-field required :rules="[rulesCreditorName]" @change="updateState" label="Название организации *"  v-model="creditor.name"></v-text-field>
@@ -60,44 +60,43 @@ export default {
     },
     methods: {
       updateState() {
-        console.log('updateState emitted');
         this.$emit('updateState');
       },
       deleteCreditor(id) {
         console.log('Going deleteCreditor conponents: ', id)
         this.$store.dispatch('creditor/delete',id);
-        this.$store.dispatch('popAllErrorsByID', {step: 1, id: this.$props.creditor.id});
+        this.$store.dispatch('error/deleteAllErrorsByID', {step: 1, id: this.$props.creditor.id});
       },
       rulesLegalForm(value) {
         if (!value) {
-          this.$store.dispatch('pushError', {step: 1, name: 'creditorLegalForm_' + this.$props.creditor.id});
+          this.$store.dispatch('error/add', {step: 1, name: 'creditorLegalForm_'  + this.$props.creditor.id});
           return 'Нужно выбрать';
         } else {
-          this.$store.dispatch('popError', {step: 1, name: 'creditorLegalForm_' + this.$props.creditor.id});
+          this.$store.dispatch('error/delete', {step: 1, name: 'creditorLegalForm_'  + this.$props.creditor.id});
           return true;
         }
       },
       rulesCreditorName(value) {
         if (!value) {
-          this.$store.dispatch('pushError', {step: 1, name: 'creditorName_' + this.$props.creditor.id});
+          this.$store.dispatch('error/add', {step: 1, name: 'creditorName_'  + this.$props.creditor.id});
           return 'Укажите кредитора';
         } else if (value.length < 5) {
-          this.$store.dispatch('pushError', {step: 1, name: 'creditorName_' + this.$props.creditor.id});
+          this.$store.dispatch('error/add', {step: 1, name: 'creditorName_'  + this.$props.creditor.id});
           return '5 знаков минимум';
         } else {
-          this.$store.dispatch('popError', {step: 1, name: 'creditorName_' + this.$props.creditor.id});
+          this.$store.dispatch('error/delete', {step: 1, name: 'creditorName_'  + this.$props.creditor.id});
           return true;
         }
       },
       rulesCreditorPhone(value) {
         if (!value) {
-          this.$store.dispatch('pushError', {step: 1, name: 'creditorPhone_' + this.$props.creditor.id});
+          this.$store.dispatch('error/add', {step: 1, name: 'creditorPhone_'  + this.$props.creditor.id});
           return 'Укажите телефон';
         } else if (value.length < 5) {
-          this.$store.dispatch('pushError', {step: 1, name: 'creditorPhone_' + this.$props.creditor.id});
+          this.$store.dispatch('error/add', {step: 1, name: 'creditorPhone_'  + this.$props.creditor.id});
           return '5 знаков минимум';
         } else {
-          this.$store.dispatch('popError', {step: 1, name: 'creditorPhone_' + this.$props.creditor.id});
+          this.$store.dispatch('error/delete', {step: 1, name: 'creditorPhone_'  + this.$props.creditor.id});
           return true;
         }
       }

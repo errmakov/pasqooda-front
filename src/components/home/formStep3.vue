@@ -62,19 +62,19 @@ export default {
         },
         rulesPenalty(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 2, name: 'penalty'})
+                this.$store.dispatch('error/add', {step: 2, name: 'penalty'});
                 return 'Нужно выбрать';
             } else {
-                this.$store.dispatch('popError', {step: 2, name: 'penalty'})
+                this.$store.dispatch('error/delete', {step: 2, name: 'penalty'});
                 return true;
             }
         },
         rulesTax(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 2, name: 'tax'})
+                this.$store.dispatch('error/add', {step: 2, name: 'tax'});
                 return 'Нужно выбрать';
             } else {
-                this.$store.dispatch('popError', {step: 2, name: 'tax'})
+                this.$store.dispatch('error/delete', {step: 2, name: 'tax'});
                 return true;
             }
         }

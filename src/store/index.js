@@ -7,6 +7,7 @@ import * as penalty from "@/store/modules/penalty.js";
 import * as tax from "@/store/modules/tax.js";
 import * as movable from "@/store/modules/movable.js";
 import * as realty from "@/store/modules/realty.js";
+import * as error from "@/store/modules/error.js";
 
 const vuexLocal = new VuexPersistence({
   key: "pasqooda",
@@ -36,21 +37,12 @@ export default new Vuex.Store({
     hasRealty: null,
     hasDebitors: null,
     step: 1,
-    errors: [
-      [],
-      [],
-      [],
-      [],
-      [],
-    ]
+    loading: null // NULL - loading is not in progress, 1 - loading in progress, 2 - done, form sended 
   
   },
   mutations: {
-    PUSH_ERROR(state, err) {
-      state.errors[err.step].push(err.name);
-    },
-    POP_ERROR(state, err) {
-      state.errors[err.step].splice(err.index, err.index+1);
+    SET_LOADING(state, loadStatus) {
+      state.loading = loadStatus;
     },
     SET_STEP(state,step) {
       state.step = step;
@@ -68,48 +60,8 @@ export default new Vuex.Store({
     setStep({commit}, step) {
       commit('SET_STEP', step);
     },
-    pushError({commit}, err) {
-      let errors = this.state.errors;
-      let found = false;
-      
-        for (let k in errors[err.step]) {
-          if (errors[err.step][k] == err.name) {
-            found = true;
-          };
-        };
-        if (!found) {
-          commit('PUSH_ERROR', err);
-        };
-      
-    },
-    popError({commit}, err) {
-      
-      let errors = this.state.errors;
-      
-      let found = false;
-      let index;
-      for (let k in errors[err.step]) {
-        if (errors[err.step][k] == err.name) {
-          found = true;
-          index = k;
-          break;
-        };
-      };
-      if (found) {
-        let step = err.step;
-        commit('POP_ERROR', {step, index});
-      }
-    },
-    
-    popAllErrorsByID({commit}, err) {
-      let errors = this.state.errors;
-      let step = err.step;
-      for (let k in errors[step]) {
-        if (errors[err.step][k].match(new RegExp(err.id))) {
-          commit('POP_ERROR', {step, index:k});
-        };
-      };
-      
+    setLoading({commit}, loadStatus) {
+      commit('SET_LOADING', loadStatus);
     }
   },
   modules: {
@@ -118,6 +70,7 @@ export default new Vuex.Store({
     penalty,
     tax,
     realty,
-    movable
+    movable,
+    error
   }
 });

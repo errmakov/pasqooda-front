@@ -65,85 +65,88 @@ export default {
         },
         rulesContactNameSecond(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 0, name: 'contact_name_second'});
+                
+                this.$store.dispatch('error/add', {step: 0, name: 'contact_name_second'});
                 return 'Укажите фамилию';
             } else if (value.length<2) {
-                this.$store.dispatch('pushError', {step: 0, name: 'contact_name_second'});
+                
+                this.$store.dispatch('error/add', {step: 0, name: 'contact_name_second'});
                 return '2 знака минимум';
             } else {
-                this.$store.dispatch('popError', {step: 0, name: 'contact_name_second'})
+                
+                this.$store.dispatch('error/delete', {step: 0, name: 'contact_name_second'});
                 return true;
             }
         },
         rulesContactNameFirst(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 0, name: 'contact_name_name'});
+                this.$store.dispatch('error/add', {step: 0, name: 'contact_name_name'});
                 return 'Укажите имя';
             } else if (value.length<2) {
-                this.$store.dispatch('pushError', {step: 0, name: 'contact_name_name'});
+                this.$store.dispatch('error/add', {step: 0, name: 'contact_name_name'});
                 return '2 знака минимум';
             } else {
-                this.$store.dispatch('popError', {step: 0, name: 'contact_name_name'})
+                this.$store.dispatch('error/delete', {step: 0, name: 'contact_name_name'});
                 return true;
             }
         },
         rulesPassEmitter(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_emitter'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_emitter'});
                 return 'Укажите кем выдан паспорт';
             } else if (value.length<10) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_emitter'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_emitter'});
                 return '10 зн. минимум';
             } else {
-                this.$store.dispatch('popError', {step: 0, name: 'pass_emitter'})
+                this.$store.dispatch('error/delete', {step: 0, name: 'pass_emitter'});
                 return true;
             }
         },
         rulesPassNumber(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_number'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_number'});
                 return 'Укажите номер и серию паспорта';
             } else if (value.length<10) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_number'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_number'});
                 return '10 зн. минимум';
             } else {
-                this.$store.dispatch('popError', {step: 0, name: 'pass_number'})
+                this.$store.dispatch('error/delete', {step: 0, name: 'pass_number'});
                 return true;
             }
         },
         rulesPassDate(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_date'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_date'});
                 return 'Укажите дату выдачи паспорта';
             } else if (value.length<10) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_date'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_date'});
                 return '10 знаков';
             } else {
-                this.$store.dispatch('popError', {step: 0, name: 'pass_date'})
+                this.$store.dispatch('error/delete', {step: 0, name: 'pass_date'});
                 return true;
             }
         },
         rulesRegAdress(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_regadress'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_regadress'});
                 return 'Укажите адрес регистрации';
             } else if (value.length<5) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_regadress'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_regadress'});
                 return '5 знаков минимум';
             } else {
-                this.$store.dispatch('popError', {step: 0, name: 'pass_regadress'})
+                this.$store.dispatch('error/delete', {step: 0, name: 'pass_regadress'});
                 return true;
             }
         },
         rulesContactPhone(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_contact_phone'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_contact_phone'});
                 return 'Укажите телефон';
             } else if (value.length<10) {
-                this.$store.dispatch('pushError', {step: 0, name: 'pass_contact_phone'})
+                this.$store.dispatch('error/add', {step: 0, name: 'pass_contact_phone'});
                 return '10 знаков минимум';
             } else {
-                this.$store.dispatch('popError', {step: 0, name: 'pass_contact_phone'})
+                this.$store.dispatch('error/delete', {step: 0, name: 'pass_contact_phone'});
                 return true;
             }
         }

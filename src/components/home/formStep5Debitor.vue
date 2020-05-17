@@ -4,8 +4,8 @@
                       <v-col cols="8" class="pr-10">
                         <p>Должник №{{serialNumber}} <v-btn v-if="serialNumber>1" fab elevation="0" x-small color="primary" @click.native="deleteDebitor(debitor.id)"><v-icon dark>mdi-minus</v-icon></v-btn></p>
                         <v-radio-group row v-model="debitor.legalForm" @change="updateState" >
-                          <v-radio id="p"  label="Физлицо" value="private"></v-radio>
-                          <v-radio id="l" label="Юрлицо"  value="legal"></v-radio>
+                          <v-radio label="Физлицо" value="private"></v-radio>
+                          <v-radio label="Юрлицо"  value="legal"></v-radio>
                         </v-radio-group>
                         <div v-if="debitor.legalForm=='legal'">
                           <v-text-field @change="updateState" label="Название организации"  v-model="debitor.name"></v-text-field>

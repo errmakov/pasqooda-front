@@ -22,6 +22,13 @@ export default {
     appHeader,
     appFooter
   },
+  created () {
+    // const $script = document.createElement('script')
+    // $script.async = true
+    // $script.src = 'https://www.google.com/recaptcha/api.js?render=6LdpD_gUAAAAAOvcFYzJki1dz8ZOpQQ5uVxS7BxL'
+    // document.head.appendChild($script)
+
+  },
   mounted() {
   }
 
@@ -33,6 +40,7 @@ export default {
   @import url('https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css');
   @import url('https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css');
   @import './assets/styles/app.css';
+  .grecaptcha-badge { opacity:0;}
 </style>
 
 

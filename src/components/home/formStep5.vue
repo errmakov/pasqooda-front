@@ -16,7 +16,15 @@
                 <v-btn color="primary" fab x-small elevation="0" @click.native="addDebitor"><v-icon dark>mdi-plus</v-icon></v-btn> еще должники
             </div>
             <br/><br/>
-            <v-btn color="primary" @click.native="propSetStep(4)">Предыдущий шаг</v-btn> <v-btn color="primary" @click.native="propSetStep(6)" :disabled="!propCheckStep(5)">Отправить</v-btn>
+            <div v-if="(loading == null)">
+                <v-btn color="primary" @click.native="propSetStep(4)">Предыдущий шаг</v-btn> <v-btn color="primary" type="submit" :disabled="!propCheckStep(5)">Отправить</v-btn>
+            </div>
+            <div v-if="(loading == 1)">
+                <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
+            </div>
+            <div v-if="(loading == 2)">
+                <v-btn color="primary" @click.native="restartForm">Заполнить форму еще раз</v-btn>
+            </div>
         
         </v-stepper-content>
   </div>
@@ -34,6 +42,16 @@ export default {
         debitorItem
     },
     methods: {
+        restartForm() {
+            this.propSetStep(1); 
+            window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+            });
+            this.$store.dispatch('setLoading', null);
+            
+        },
         updateState() {
             this.$emit('updateState');
         },
@@ -42,19 +60,17 @@ export default {
         },
         rulesDebitors(value) {
             if (!value) {
-                this.$store.dispatch('pushError', {step: 4, name: 'debitors'})
+                this.$store.dispatch('error/add', {step: 4, name: 'debitors'});
                 return 'Нужно выбрать';
             } else {
-                this.$store.dispatch('popError', {step: 4, name: 'debitors'})
+                this.$store.dispatch('error/delete', {step: 4, name: 'debitors'});
                 return true;
             }
-            
-            
         }
     },  
     computed: {
         ...mapState(
-            ['registration', 'step', 'debitor']
+            ['registration', 'step', 'debitor', 'loading']
         ),
         ...mapGetters(
              'debitor', ['getLength']

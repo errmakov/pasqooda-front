@@ -19,14 +19,14 @@ export default {
             required: true 
         } 
         },
-        methods: {
+    methods: {
         updateState() {
             this.$emit('updateState');
         },
         deletePenalty(id) {
             this.$store.dispatch('penalty/delete',id);
         }
-        }
+    }
 }
 </script>
 

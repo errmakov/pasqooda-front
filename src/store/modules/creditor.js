@@ -45,7 +45,6 @@ export const actions = {
       },
     delete({commit},id) {
         commit('DELETE_CREDITOR',id);
-        nextID--; 
       },
 }
 
