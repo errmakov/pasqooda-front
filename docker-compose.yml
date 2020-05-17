@@ -12,3 +12,4 @@ services:
     container_name: "pasqooda_front"
     ports:
       - 4041:80
+    tty: false
