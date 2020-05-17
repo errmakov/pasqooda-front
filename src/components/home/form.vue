@@ -7,14 +7,6 @@
             <formStep4 :propCheckStep="checkStep"  :propSetStep="setStep" @updateState="updateState" />
             <formStep5 :propCheckStep="checkStep"  :propSetStep="setStep" @updateState="updateState" />
             <br/><br/>
-            <p>
-            Loading: {{loading}}<br/><br/>
-            Errors: {{errors}} <br/><br/>
-            Registration: {{registration}}<br/><br/> Creditors:{{creditors}}<br/><br/>Penalties: {{penalties}}<br/><br/>Taxes: {{taxes}}<br/><br/>
-            Realty: {{estates}}<br/><br/>
-            Movable: {{properties}}<br/><br/>
-            Debitors: {{debitors}}<br/><br/>
-            </p>
         </v-form>
         <dialogSuccess ref="dialogSuccess"/>
     </v-stepper>

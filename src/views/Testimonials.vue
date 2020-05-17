@@ -1,5 +1,5 @@
 <template>
-  <h1>Testimonials page</h1>
+  <h1>Отзывы наших клиентов</h1>
 </template>
 
 <script>

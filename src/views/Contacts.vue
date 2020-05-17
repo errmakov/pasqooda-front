@@ -1,5 +1,5 @@
 <template>
-  <h1>Contacts page</h1>
+  <h1>Контактная информация</h1>
 </template>
 
 <script>

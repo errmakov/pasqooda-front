@@ -8,7 +8,6 @@
                     <nav>
                         <ul>
                          <li><router-link to="/">Главная</router-link></li>
-                          <li><router-link to="/about">О сервисе</router-link></li>
                           <li><router-link to="/testimonials">Отзывы</router-link></li>
                           <li><router-link to="/contacts">Контактная информация</router-link></li>
                         </ul>

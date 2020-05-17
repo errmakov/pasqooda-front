@@ -15,7 +15,6 @@
       </v-card>
     </v-dialog>
   </v-row>
-  <p>foobar from success<br/>isVisibleSuccess: {{isVisibleSuccess}} <br/>visible: {{visible}}</p> 
 </div>
 </template>
 
@@ -25,7 +24,7 @@ import {mapState} from "vuex";
 export default {
     data() {
         return {
-            visible: true
+            visible: false
         }
     },
     methods: {
