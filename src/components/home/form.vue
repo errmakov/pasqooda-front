@@ -37,6 +37,11 @@ export default {
             //visibleSuccess: this.isVisibleSuccess()
         }
     },
+    mounted() {
+        if (this.loading == 1) {
+            this.$store.dispatch('setLoading', null);
+        }
+    },
     methods: {
         updateState() {
             this.$store.dispatch('updateState');
@@ -62,30 +67,48 @@ export default {
                 let postData = {
                     registration: this.registration,
                     creditors: this.creditors,
-                    debitors: this.debitors,
-                    penalties: this.penalties,
-                    taxes: this.taxes,
-                    realty: this.estates,
-                    movable: this.properties,
                     timestamp: Date.now(),
                     recaptchaToken: token
                 };
+                if (this.registration.hasDebitors === 'yes') {
+                    postData.debitors = this.debitors;
+                };
+                if (this.registration.hasPenalties === 'yes') {
+                    postData.penalties = this.penalties;
+                };
+                if (this.registration.hasUnpayTaxes === 'yes') {
+                    postData.taxes = this.taxes;
+                };
+                if (this.registration.hasRealty === 'yes') {
+                    postData.realty = this.estates;
+                };
+                if (this.registration.hasMovables === 'yes') {
+                    postData.movable = this.properties;
+                };
+                
                 this.$store.dispatch('setLoading', 1);
                 this.$refs.dialogSuccess.visible = true; // ready to show success dialog
                 axios.post(this.appConfig.apiUrl + '/user/add', postData)
                 .then((response)=>{
-                    this.$store.dispatch('setLoading', 2);
+                    if (response.data.res === 'OK') {
+                        axios.post(this.appConfig.apiUrl + '/notify', postData);
+                        this.$store.dispatch('setLoading', 2);
+                    } else { // got response with errors
+                        console.log('Error from API', response.data.message);
+                        this.$store.dispatch('setLoading', null);
+                        this.$store.dispatch('notice/add', {type: 'error', message: response.data.message}, {root: true})
+                    }
                     console.log(response.data)
                 })
                 .catch((err)=>{
                     this.$store.dispatch('setLoading', null);
                     console.log('Something wrong: ', err)
-                    //кинуть нотис в буфер нотисов
+                    this.$store.dispatch('notice/add', {type: 'error', message: 'Интернет приболел, связь пропала. Попробуйте отправить данные чуть позже.'}, {root: true})
                 })
             })
             .catch((err)=>{
                 console.log('Token err:', err);
-                //прокинуть на роут 500err
+                this.$store.dispatch('notice/add', {type: 'warning', message: 'Дружище, мы не смогли проверить человек ты или робот. Попробуй отправить данные чуть позже.'}, {root: true})
             })
             
             

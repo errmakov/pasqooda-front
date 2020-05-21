@@ -4,7 +4,9 @@
       <appHeader />
       <router-view />
     </v-container>
-    <appFooter />
+    <noticeContainer />
+    
+    
   </v-app>
   
 </template>
@@ -14,13 +16,17 @@
 
 <script>
 import appHeader from '@/components/header.vue';
-import appFooter from '@/components/footer.vue';
+
+import noticeContainer from '@/components/notice/noticeContainer.vue';
+
+
 
 export default {
   name: 'App',
   components: {
     appHeader,
-    appFooter
+    
+    noticeContainer
   },
   created () {
     // const $script = document.createElement('script')
@@ -30,6 +36,7 @@ export default {
 
   },
   mounted() {
+    console.log('Running on stage: ', this.appConfig.stage);
   }
 
 }

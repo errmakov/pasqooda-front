@@ -8,6 +8,7 @@ import * as tax from "@/store/modules/tax.js";
 import * as movable from "@/store/modules/movable.js";
 import * as realty from "@/store/modules/realty.js";
 import * as error from "@/store/modules/error.js";
+import * as notice from "@/store/modules/notice.js";
 
 const vuexLocal = new VuexPersistence({
   key: "pasqooda",
@@ -32,10 +33,6 @@ export default new Vuex.Store({
       contact_phone:null
     },  
     updated: null,
-    hasPenalties: null,
-    hasMovables: null,
-    hasRealty: null,
-    hasDebitors: null,
     step: 1,
     loading: null // NULL - loading is not in progress, 1 - loading in progress, 2 - done, form sended 
   
@@ -71,6 +68,7 @@ export default new Vuex.Store({
     tax,
     realty,
     movable,
-    error
+    error,
+    notice
   }
 });
