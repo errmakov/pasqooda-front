@@ -32,7 +32,15 @@
                     <v-btn  @click.native="addMovable" color="primary" fab x-small elevation="0"><v-icon dark>mdi-plus</v-icon></v-btn> еще движимое имущество
                 </div>
                 <br/><br/>
-                <v-btn color="primary" @click.native="propSetStep(3)">Предыдущий шаг</v-btn> <v-btn @click.native="propSetStep(5)" color="primary"  :disabled="!propCheckStep(4)">Далее</v-btn>
+                
+                <v-row>
+                    <v-col cols="12" sm="5" md="3">
+                        <v-btn color="primary" @click.native="propSetStep(3)">Предыдущий шаг</v-btn>
+                    </v-col>
+                    <v-col cols="12" sm="4" md="3">
+                        <v-btn @click.native="propSetStep(5)" color="primary"  :disabled="!propCheckStep(4)">Далее</v-btn>
+                    </v-col>
+                </v-row>
         </v-stepper-content>        
     </div>
 </template>

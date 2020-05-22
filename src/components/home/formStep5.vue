@@ -13,11 +13,21 @@
                 </li>
             </ul>
             <div v-if="(getLength) < 5 && (registration.hasDebitors == 'yes')">
+           
+
                 <v-btn color="primary" fab x-small elevation="0" @click.native="addDebitor"><v-icon dark>mdi-plus</v-icon></v-btn> еще должники
             </div>
             <br/><br/>
             <div v-if="(loading == null)">
-                <v-btn color="primary" @click.native="propSetStep(4)">Предыдущий шаг</v-btn> <v-btn color="primary" type="submit" :disabled="!propCheckStep(5)">Отправить</v-btn>
+             <v-row>
+                    <v-col cols="12" sm="5" md="3">
+                        <v-btn color="primary" @click.native="propSetStep(4)">Предыдущий шаг</v-btn>
+                    </v-col>
+                    <v-col cols="12" sm="4" md="3">
+                        <v-btn color="primary" type="submit" :disabled="!propCheckStep(5)">Отправить</v-btn>
+                    </v-col>
+            </v-row>
+                 
             </div>
             <div v-if="(loading == 1)">
                 <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>

@@ -12,7 +12,15 @@
                 <v-btn color="primary" fab x-small elevation="0" @click.native="addCreditor"><v-icon dark>mdi-plus</v-icon></v-btn> еще кредиторы
             </div>
             <br/><br/>
-            <v-btn color="primary" @click.native="propSetStep(1)">Предыдущий шаг</v-btn> <v-btn color="primary" @click.native="propSetStep(3)" :disabled="!propCheckStep(2)">Далее</v-btn>
+            <v-row>
+                <v-col cols="12" sm="5" md="3">
+                    <v-btn color="primary" @click.native="propSetStep(1)">Предыдущий шаг</v-btn>
+                </v-col>
+                <v-col cols="12" sm="4" md="3">
+                    <v-btn color="primary" @click.native="propSetStep(3)" :disabled="!propCheckStep(2)">Далее</v-btn>
+                </v-col>
+            </v-row>
+            
         
         </v-stepper-content>
   </div>
