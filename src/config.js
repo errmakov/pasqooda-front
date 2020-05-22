@@ -11,7 +11,7 @@ let config = {
   },
   production:  {
     debug: 0,
-    apiUrl: 'http://212.109.216.232:4040',
+    apiUrl: 'https://pasqooda-api.weblime.ru',
     captcha: {
       secret: '6LdpD_gUAAAAAOvcFYzJki1dz8ZOpQQ5uVxS7BxL'
     },
