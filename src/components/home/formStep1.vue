@@ -25,7 +25,7 @@
                     <v-col cols="12" sm="3" class="pr-10">
                         <v-menu :close-on-content-click="false" v-model="registration.pass_date_menu" transition="scale-transition" offset-y  :nudge-right="40" max-width="290px" min-width="290px">
                             <template v-slot:activator="{ on }">
-                                <v-text-field  @change="updateState"  v-on="on" label="Дата выдачи *" v-model="registration.pass_date" prepend-icon="mdi-calendar" readonly required :rules="[rulesPassDate]"></v-text-field>
+                                <v-text-field  @change="updateState"  v-on="on" label="Дата выдачи *" v-model="computedDateFormatted" prepend-icon="mdi-calendar" readonly required :rules="[rulesPassDate]"></v-text-field>
                             </template>
                             <v-date-picker v-model="registration.pass_date" no-title scrollable actions @input="registration.pass_date_menu = false" locale="ru-ru">
                                 <v-card-actions>
@@ -62,6 +62,16 @@ export default {
     methods: {
         updateState() {
             this.$emit('updateState');
+        },
+        formatDate (date) {
+            if (!date) return null;
+            const [year, month, day] = date.split('-');
+            return `${day}.${month}.${year}`;
+        },
+        parseDate (date) {
+            if (!date) return null
+            const [month, day, year] = date.split('/')
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
         },
         rulesContactNameSecond(value) {
             if (!value) {
@@ -154,6 +164,10 @@ export default {
     computed: {
         ...mapState(['creditor_count', 'registration', 'step']),
         ...mapGetters(['getStep', 'getRegistration']),
+        computedDateFormatted () {
+            return this.formatDate(this.registration.pass_date);
+        },
+      
     }
         
     
