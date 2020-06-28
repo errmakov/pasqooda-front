@@ -5,10 +5,9 @@
             <formStep2 :propCheckStep="checkStep"  :propSetStep="setStep" @updateState="updateState" />
             <formStep3 :propCheckStep="checkStep"  :propSetStep="setStep" @updateState="updateState" />
             <formStep4 :propCheckStep="checkStep"  :propSetStep="setStep" @updateState="updateState" />
-            <formStep5 :propCheckStep="checkStep"  :propSetStep="setStep" @updateState="updateState" />
-            <br/><br/>
+            <formStep5 :propCheckStep="checkStep"  :propSetStep="setStep" @updateState="updateState"/>
         </v-form>
-        <dialogSuccess ref="dialogSuccess"/>
+        <dialogSuccess ref="dialogSuccess" />
     </v-stepper>
 </template>
 
@@ -18,6 +17,7 @@ import formStep2 from '@/components/home/formStep2.vue';
 import formStep3 from '@/components/home/formStep3.vue';
 import formStep4 from '@/components/home/formStep4.vue';
 import formStep5 from '@/components/home/formStep5.vue';
+import Payment from '@/services/Payment.js';
 import dialogSuccess from '@/components/home/dialogSuccess.vue';
 import {mapState, mapGetters} from "vuex";
 import axios from "axios";
@@ -33,8 +33,7 @@ export default {
     },
     data() {
         return {
-            reactData: null
-            //visibleSuccess: this.isVisibleSuccess()
+            
         }
     },
     mounted() {
@@ -59,6 +58,7 @@ export default {
             }
             return noErrors;
         },
+        
         formSubmit() {
             console.log('submitted');
             this.$recaptcha('register')
@@ -85,21 +85,38 @@ export default {
                 if (this.registration.hasMovables === 'yes') {
                     postData.movable = this.properties;
                 };
-                
-                this.$store.dispatch('setLoading', 1);
-                this.$refs.dialogSuccess.visible = true; // ready to show success dialog
-                axios.post(this.appConfig.apiUrl + '/user/add', postData)
-                .then((response)=>{
-                    if (response.data.res === 'OK') {
-                        axios.post(this.appConfig.apiUrl + '/notify', postData);
-                        this.$store.dispatch('setLoading', 2);
-                    } else { // got response with errors
-                        console.log('Error from API', response.data.message);
-                        this.$store.dispatch('setLoading', null);
-                        this.$store.dispatch('notice/add', {type: 'error', message: response.data.message}, {root: true})
+                let payData = {
+                    apiUrl: this.appConfig.apiUrl,
+                    payDetails: {
+                        orderDescription: 'Подготовка заявления',
+                        customerFullname: this.registration.contact_name_second + ' ' + this.registration.contact_name_name + ' ' + this.registration.contact_name_middle,
+                        customerPhone: this.registration.contact_phone,
+                        customerEmail: this.registration.contact_email
                     }
-                    console.log(response.data)
+                };
+                console.log(payData);
+                let payment = new Payment(payData);
+                console.log(payment);
+                payment.get()
+                .then((payObject)=>{
+                    postData.payment = payObject;
+                    this.$store.dispatch('setPayment', {paylink: payObject.confirmation.confirmation_url, payid: payObject.id});
+                    this.$store.dispatch('setLoading', 1);
+                    this.$refs.dialogSuccess.visible = true; // ready to show success dialog
+                    axios.post(this.appConfig.apiUrl + '/user/add', postData)
+                    .then((response)=>{
+                        if (response.data.res === 'OK') {
+                            axios.post(this.appConfig.apiUrl + '/notify', response.data.message);
+                            this.$store.dispatch('setLoading', 2);
+                        } else { // got response with errors
+                            console.log('Error from API', response.data.message);
+                            this.$store.dispatch('setLoading', null);
+                            this.$store.dispatch('notice/add', {type: 'error', message: response.data.message}, {root: true})
+                        }
+                        console.log(response.data)
+                    })
                 })
+                
                 .catch((err)=>{
                     this.$store.dispatch('setLoading', null);
                     console.log('Something wrong: ', err)
@@ -115,7 +132,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['creditor_count', 'registration','step', 'loading']),
+        ...mapState(['creditor_count', 'registration','step', 'loading', 'payment']),
         ...mapState('creditor',['creditors']),
         ...mapState('debitor',['debitors']),
         ...mapState('penalty',['penalties']),

@@ -34,12 +34,19 @@ export default new Vuex.Store({
     },  
     updated: null,
     step: 1,
-    loading: null // NULL - loading is not in progress, 1 - loading in progress, 2 - done, form sended 
+    loading: null, // NULL - loading is not in progress, 1 - loading in progress, 2 - done, form sended, ready to pay, 3 - payed 
+    payment: {
+      paylink: null,
+      payid: null
+    }
   
   },
   mutations: {
     SET_LOADING(state, loadStatus) {
       state.loading = loadStatus;
+    },
+    SET_PAYMENT(state, paydetails) {
+      state.payment = paydetails;
     },
     SET_STEP(state,step) {
       state.step = step;
@@ -59,6 +66,9 @@ export default new Vuex.Store({
     },
     setLoading({commit}, loadStatus) {
       commit('SET_LOADING', loadStatus);
+    },
+    setPayment({commit}, paydetails) {
+      commit('SET_PAYMENT', paydetails);
     }
   },
   modules: {

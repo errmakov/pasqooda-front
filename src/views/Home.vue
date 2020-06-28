@@ -1,7 +1,7 @@
 <template>
     <div>
         <promoblock />
-        <appForm />
+        <appForm ref="appForm"/>
     </div>
 </template>
 

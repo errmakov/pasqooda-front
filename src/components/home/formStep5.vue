@@ -33,7 +33,22 @@
                 <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
             </div>
             <div v-if="(loading == 2)">
-                <v-btn color="primary" @click.native="restartForm">Заполнить форму еще раз</v-btn>
+                <v-row>
+                    <v-col cols="12" sm="5" md="3">
+                        <v-btn color="primary" @click.native="restartForm">Заполнить форму еще раз</v-btn>
+                    </v-col>
+                    <v-col cols="12" sm="4" md="3">
+                        <v-btn color="primary" @click="doCheckout()">Оплатить 300р сейчас</v-btn>
+                    </v-col>
+            </v-row>
+            </div>
+            <div v-if="(loading == 3)">
+                <v-row>
+                    <v-col cols="12" sm="5" md="3">
+                        <v-btn color="primary" @click.native="restartForm">Заполнить форму еще раз</v-btn>
+                    </v-col>
+                    
+            </v-row>
             </div>
         
         </v-stepper-content>
@@ -62,6 +77,9 @@ export default {
             this.$store.dispatch('setLoading', null);
             
         },
+        doCheckout() {
+            window.location = this.payment.paylink;
+        },
         updateState() {
             this.$emit('updateState');
         },
@@ -80,7 +98,7 @@ export default {
     },  
     computed: {
         ...mapState(
-            ['registration', 'step', 'debitor', 'loading']
+            ['registration', 'step', 'debitor', 'loading', 'payment']
         ),
         ...mapGetters(
              'debitor', ['getLength']
