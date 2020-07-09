@@ -10,13 +10,22 @@
     
     <v-text-field label="Адрес" @change="updateState"  v-model="realty.address"></v-text-field>
 
-    <v-text-field label="Приблизительная стоимость" @change="updateState"  v-model="realty.price"></v-text-field>
+    <v-text-field label="Приблизительная стоимость" @change="updateState"  v-model="getRealtyPrice" v-model.lazy="getRealtyPrice" v-money="money"></v-text-field>
     <br/>
 </div>
 </template>
 
 <script>
+import {VMoney} from 'v-money';
+import * as helpers from '@/services/helpers.js';
 export default {
+    
+    data() {
+        return {
+            money: helpers.money,
+        }
+    }, 
+    directives: {money: VMoney},
     props: {
         realty: {
             type: Object,
@@ -26,15 +35,27 @@ export default {
             type: Number,
             required: true 
         } 
-        },
-        methods: {
+    },
+    methods: {
         updateState() {
             this.$emit('updateState');
         },
         deleteRealty(id) {
             this.$store.dispatch('realty/delete',id);
         }
+    },
+    computed: {
+        getRealtyPrice: {
+        set(val) {
+          let sumFloat = helpers.clearMoney(val);
+          this.realty.price = sumFloat;
+          return val;
+        },
+        get() {
+          return this.realty.price;
         }
+      }
+    }
 }
 </script>
 

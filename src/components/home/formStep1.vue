@@ -3,26 +3,43 @@
   <v-stepper-step :step="step" :complete="step > 1">Контактные данные</v-stepper-step>
             <v-stepper-content step="1">
                 <b>Как вас зовут</b>
-                <v-row no-gutters class="mb-10">
-                    <v-col cols="12" sm="4" class="pr-10">
+                <v-row no-gutters>
+                    <v-col cols="12" sm="6" class="pr-10">
                         <v-text-field @change="updateState" label="Фамилия *"  v-model="registration.contact_name_second" name="contact_name_second" required :rules="[rulesContactNameSecond]"></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="4" class="pr-10">
+                    <v-col cols="12" sm="6" class="pr-10">
                         <v-text-field @change="updateState" label="Имя *"  v-model="registration.contact_name_name" name="contact_name_name" required :rules="[rulesContactNameFirst]"></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="4">
-                        <v-text-field @change="updateState" label="Отчество"  v-model="registration.contact_name_middle" name="contact_name_middle"></v-text-field>
+                </v-row>
+                <v-row no-gutters class="mb-10">
+                    <v-col cols="12" sm="6" class="pr-10">
+                        <v-text-field @change="updateState" label="Отчество (обязательно, если указано в паспорте)"  v-model="registration.contact_name_middle" name="contact_name_middle"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                        <v-radio-group  row v-model="registration.contact_gender" @change="updateState" label="И вы *" :rules="[rulesGender]">
+                          <v-row>
+                          <v-col cols="12" sm="5" md="3">
+                            <v-radio  label="Женщина" value="female"></v-radio>
+                          </v-col>
+                          
+                          <v-col cols="12" sm="5" md="3">
+                            <v-radio  label="Мужчина"  value="male"></v-radio>
+                          </v-col>
+                          </v-row>
+                        </v-radio-group>
                     </v-col>
                 </v-row>
                 <b>Паспорт</b>
-                <v-row no-gutters  class="mb-10">
-                    <v-col cols="12" sm="3" class="pr-10">
+                <v-row no-gutters>
+                    <v-col cols="12" sm="6" class="pr-10">
                         <v-text-field  @change="updateState"  label="Серия и номер *" v-model="registration.pass_number" name="pass_number" required :rules="[rulesPassNumber]"></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="3" class="pr-10">
+                    <v-col cols="12" sm="6" class="pr-10">
                         <v-text-field  @change="updateState"  label="Кем выдан *" v-model="registration.pass_emitter" name="pass_emitter"  required :rules="[rulesPassEmitter]"></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="3" class="pr-10">
+                </v-row>
+                <v-row no-gutters  class="mb-10">
+                    <v-col cols="12" sm="6" class="pr-10">
                         <v-menu :close-on-content-click="false" v-model="registration.pass_date_menu" transition="scale-transition" offset-y  :nudge-right="40" max-width="290px" min-width="290px">
                             <template v-slot:activator="{ on }">
                                 <v-text-field  @change="updateState"  v-on="on" label="Дата выдачи *" v-model="computedDateFormatted" prepend-icon="mdi-calendar" readonly required :rules="[rulesPassDate]"></v-text-field>
@@ -34,7 +51,7 @@
                             </v-date-picker>
                         </v-menu>
                     </v-col>
-                    <v-col cols="12" sm="3">
+                    <v-col cols="12" sm="6">
                         <v-text-field @change="updateState"  label="Адрес регистрации *" v-model="registration.regadress" name="regadress" required :rules="[rulesRegAdress]"></v-text-field>
                     </v-col>
                 </v-row>
@@ -100,6 +117,16 @@ export default {
                 return true;
             }
         },
+        rulesGender(value) {
+            if (!value) {
+                this.$store.dispatch('error/add', {step: 0, name: 'contact_gender'});
+                return 'Укажите пол';
+            } else {
+                this.$store.dispatch('error/delete', {step: 0, name: 'contact_gender'});
+                return true;
+            }
+        },
+
         rulesPassEmitter(value) {
             if (!value) {
                 this.$store.dispatch('error/add', {step: 0, name: 'pass_emitter'});

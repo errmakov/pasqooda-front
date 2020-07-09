@@ -1,7 +1,7 @@
 <template>
   <div>               
                      <v-row no-gutters>
-                      <v-col cols="8" class="pr-10">
+                      <v-col cols="12" class="pr-10">
                         <p>Кредитор №{{serialNumber}} <v-btn v-if="serialNumber>1" fab elevation="0" x-small color="primary" @click.native="deleteCreditor(creditor.id)"><v-icon dark>mdi-minus</v-icon></v-btn></p>
                         <v-radio-group required :rules="[rulesLegalForm]" row v-model="creditor.legalForm" @change="updateState" >
                           <v-row>
@@ -37,18 +37,33 @@
                     </v-row>
                     <v-row no-gutters>
                       <v-col cols="12"   sm="6" md="4" class="pr-10">
-                        <v-text-field @change="updateState" label="Сумма основного долга" v-model="creditor.credit"></v-text-field>
+                        <v-text-field required :rules="[rulesCredit]" @change="updateState" label="Сумма основного долга *" v-model="getCredit" v-model.lazy="getCredit" v-money="money"  ></v-text-field>
                       </v-col>
                       <v-col cols="12"   sm="6" md="4" class="pr-10">
-                        <v-text-field @change="updateState" label="Сумма процентов" v-model="creditor.interest"></v-text-field>
+                        <v-text-field @change="updateState" label="Сумма процентов" v-model="getInterest" v-model.lazy="getInterest" v-money="money"></v-text-field>
                       </v-col>
                       <v-col cols="12"   sm="6" md="4" class="pr-10">
-                        <v-text-field @change="updateState" label="Сумма штрафов" v-model="creditor.penalties"></v-text-field>
+                        <v-text-field @change="updateState" label="Сумма штрафов" v-model="getPenalties" v-model.lazy="getPenalties" v-money="money"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row no-gutters>
-                      <v-col cols="12" sm="8" class="pr-10">
-                        <v-text-field @change="updateState" label="Документ по которому возникла задолженность" v-model="creditor.document"></v-text-field>
+                      <v-col cols="12" sm="4" class="pr-10">
+                        <v-select :rules="[rulesDocumentName]" @change="updateState" :items="creditDocList" label="Документ по которому возникла задолженность *" v-model="creditor.document.name"></v-select>
+                      </v-col>
+                      <v-col cols="12" sm="4" class="pr-10">
+                        <v-text-field @change="updateState" label="Номер документа, если есть" v-model="creditor.document.number"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="4" class="pr-10">
+                        <v-menu :close-on-content-click="false" v-model="creditor.document.menu" transition="scale-transition" offset-y  :nudge-right="40" max-width="290px" min-width="290px">
+                            <template v-slot:activator="{ on }">
+                                <v-text-field  @change="updateState"  v-on="on" label="Дата документа *" v-model="computedDateFormatted" prepend-icon="mdi-calendar" readonly required :rules="[rulesCreditorDocDate]"></v-text-field>
+                            </template>
+                            <v-date-picker v-model="creditor.document.date" no-title scrollable actions @input="creditor.document.menu = false" locale="ru-ru">
+                                <v-card-actions>
+                                <v-spacer></v-spacer>
+                                </v-card-actions>
+                            </v-date-picker>
+                        </v-menu>
                       </v-col>
                     </v-row>
                     
@@ -56,7 +71,17 @@
 </template>
 
 <script>
+import {VMoney} from 'v-money';
+import * as helpers from '@/services/helpers.js';
+
 export default {
+    data() {
+      return {
+        money: helpers.money,
+        creditDocList: helpers.doclist  
+      }
+    },
+    directives: {money: VMoney},
     props: {
       creditor: {
         type: Object,
@@ -67,7 +92,47 @@ export default {
         required: true 
       } 
     },
+    computed: {
+      getCredit: {
+        set(val) {
+          let sumFloat = helpers.clearMoney(val);
+          this.creditor.credit = sumFloat;
+          return val;
+        },
+        get() {
+          return this.creditor.credit;
+        }
+      },
+      getInterest: {
+        set(val) {
+          let sumFloat = helpers.clearMoney(val);
+          this.creditor.interest = sumFloat;
+          return val;
+        },
+        get() {
+          return this.creditor.interest;
+        }
+      },
+      getPenalties: {
+        set(val) {
+          let sumFloat = helpers.clearMoney(val);
+          this.creditor.penalties = sumFloat;
+          return val;
+        },
+        get() {
+          return this.creditor.penalties;
+        }
+      },
+      computedDateFormatted () {
+            return this.formatDate(this.creditor.document.date);
+      }
+    },
     methods: {
+      formatDate (date) {
+            if (!date) return null;
+            const [year, month, day] = date.split('-');
+            return `${day}.${month}.${year}`;
+      },
       updateState() {
         this.$emit('updateState');
       },
@@ -85,6 +150,37 @@ export default {
           return true;
         }
       },
+
+      rulesCredit(value) {
+        if (!value) {
+          this.$store.dispatch('error/add', {step: 1, name: 'creditorCreditSum_'  + this.$props.creditor.id});
+          return 'Укажите сумму основного долга';
+        } else {
+          this.$store.dispatch('error/delete', {step: 1, name: 'creditorCreditSum_'  + this.$props.creditor.id});
+          return true;
+        }
+      },
+
+      rulesDocumentName(value) {
+        if (!value) {
+          this.$store.dispatch('error/add', {step: 1, name: 'creditorDocumentName_'  + this.$props.creditor.id});
+          return 'Укажите документ';
+        } else {
+          this.$store.dispatch('error/delete', {step: 1, name: 'creditorDocumentName_'  + this.$props.creditor.id});
+          return true;
+        }
+      },
+      
+      rulesCreditorDocDate(value) {
+        if (!value) {
+          this.$store.dispatch('error/add', {step: 1, name: 'creditorDocDate_'  + this.$props.creditor.id});
+          return 'Укажите дату документа';
+        } else {
+          this.$store.dispatch('error/delete', {step: 1, name: 'creditorDocDate_'  + this.$props.creditor.id});
+          return true;
+        }
+      },
+
       rulesCreditorName(value) {
         if (!value) {
           this.$store.dispatch('error/add', {step: 1, name: 'creditorName_'  + this.$props.creditor.id});
@@ -109,7 +205,9 @@ export default {
           return true;
         }
       }
-    }    
+    }
+    
+    
 }
 </script>
 

@@ -24,6 +24,7 @@ export default new Vuex.Store({
       contact_name_second: null,
       contact_name_name: null,
       contact_name_middle: null,
+      contact_gender: null,
       pass_number:null,
       pass_emitter:null,
       pass_date_menu: false,

@@ -22,3 +22,23 @@ export function convertDate(date, isTime) {
   
     return result;
   }
+
+  export function clearMoney(val) {
+    let match = val.match(/(.*)\sруб\s(.*)\sкоп/);
+    let sum = match[1] + '.' + match[2];
+    sum = sum.replace(" ","");
+    let sumFloat = parseFloat(sum);
+    sumFloat = sumFloat.toFixed(2);
+    return sumFloat;
+  }
+
+  export let money  = {
+    decimal: ' руб ',
+    thousands: ' ',
+    prefix: '',
+    suffix: ' коп',
+    precision: 2,
+    masked: false
+  }
+
+  export let doclist = ['Договор займа', 'Кредитный договор', 'Договор купли-продажи', 'Договор найма (аренды)', 'Расписка']

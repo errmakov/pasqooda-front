@@ -17,7 +17,7 @@ let debitor = {
     credit: null,
     interest: null,
     penalties: null,
-    document: null
+    document: {name: null, date: null, number: null}
 }
 
 export const state = {
